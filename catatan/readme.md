@@ -48,3 +48,63 @@ laravel new restoran-andri
         });
 
 6. Membuat Seeder
+    php artisan make:seeder RoleSeeder
+
+
+7. Membuat model dan migration untuk kategory dan item
+    - php artisan make:model Category -m
+
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('cat_name')->unique();
+            $table->string('description');
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+    - php artisan make:model Item -m
+
+        Schema::create('items', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('description');
+            $table->integer('price');
+            $table->unsignedBigInteger('category_id');
+            $table->string('img')->nullable();
+            $table->boolean('is_available')->default(true);
+            $table->softDeletes();
+            $table->timestamps();
+
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+        });
+
+
+8. Factory Seeder Category dan Item
+
+    - php artisan make:seeder Category
+
+        $cartegories = [
+            ['cat_name' => 'Makanan', 'description' => 'Menu makanan utama'],
+            ['cat_name' => 'Minuman', 'description' => 'Berbagai jenis minuman'],
+        ];
+
+        DB::table('categories')->insert($cartegories);
+    
+
+    - php artisan make:factory ItemFactory
+
+        return [
+            'name' => $this->faker->word(),
+            'description' => $this->faker->sentence(),
+            'price' => $this->faker->numberBetween(10000, 100000),
+            'category_id' => $this->faker->numberBetween(1, 2), 
+            'img' => $this->faker->imageUrl(640, 480, 'food'),
+            'is_active' => $this->faker->boolean(80), // 80% chance of being available
+        ];
+
+    - php artisan make:seeder ItemSeeder
+        {
+            Item::factory(10)->create();
+        }
+    
+
