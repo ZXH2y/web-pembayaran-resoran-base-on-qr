@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('tax');
             $table->integer('total_price');
             $table->timestamps();
-            $tabel->softDeletes();
+            $table->softDeletes();
 
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('item_id')->references('id')->on('items');

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('tax');
             $table->integer('grand_total');
             $table->enum('status', ['pending', 'settlement' ,'cooked']);
+            $table->integer('table_number');
             $table->enum('payment_method', ['tunai', 'qris']);
             $table->text('note')->nullable();
             $table->softDeletes();

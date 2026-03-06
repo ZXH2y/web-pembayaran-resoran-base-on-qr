@@ -23,9 +23,8 @@ laravel new restoran-andri
             $table->string('email')->unique()->fillable();
             $table->string('password')->fillable();
             $table->string('fullname')->unique()->fillable();
-            $table->string('email')->unique()->fillable();
             $table->string('phone');
-            $table->unsignedTinyInteger('role_id'); 
+            $table->unsignedBigInteger('role_id');
             $table->softDeletes();
             $table->timestamps();
 
@@ -155,7 +154,7 @@ laravel new restoran-andri
             $table->integer('tax');
             $table->integer('total_price');
             $table->timestamps();
-            $tabel->softDeletes();
+            $table->softDeletes();
 
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('item_id')->references('id')->on('items');
@@ -176,4 +175,141 @@ laravel new restoran-andri
 
 
 # Migrations
+php artisan migrate
+
+# Membuat model
+14. Category Model:
+
+        use softDeletes;
+
+        protected $fillabele = [
+            'cat_name',
+            'description'
+        ];
+
+        protected $dates = ['deleted_at'];
+
+        public function items(){
+            return $this->hasMany(Item::class);
+        }
+
+15. Item model:
+    use softDeteles, HasFactory;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'category_id',
+        'img',
+        'is_active',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $dates = ['deleted_at'];
+
+    public function category(){
+        return $this->belongsTo(Category::class);
+    }
+
+        public function orderItems(){
+        return $this->hasMany(OrderItem::class);
+    }
+
+16. order model
+
+    protected $fillable = [
+        'order_code',
+        'user_id',
+        'subtotal',
+        'tax',
+        'grand_total',
+        'status',
+        'payment_method',
+        'note',
+        'table_number',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $dates = ['deleted_at'];
+
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function orderItems(){
+        return $this->hasMany(OrderItem::class);
+    }
+
+17. OrderItem
+
+    use softDeletes;
+
+    protected $fillable = [
+        'order_id',
+        'item_id',
+        'quantity',
+        'price',
+        'tax',
+        'total_price',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $dates = ['deleted_at'];
+
+    public function order(){
+        return $this->belongsTo(Order::class);
+    }
+
+    public function item(){
+        return $this->belongsTo(Item::class);        
+    }
+
+18. Model Role
+
+    use softDeteletes;
+
+    protected $fillable = [
+        'role_name',
+        'description',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $dates = ['deleted_at'];
+
+    public function users(){
+        return $this->hasMany(User::class);
+    }
+
+19. User Model
+
+    use HasFactory, Notifiable, softDeletes;
+
+    protected $fillable = [
+        'username',
+        'password',
+        'email',
+        'phone',
+        'fullname',
+        'role_id',
+        'created_at',
+        'update_at',
+    ];
+
+    protected $dates = ['deleted_at'];
+
+    public function role(){
+        return $this->belongsTo(Role::class);
+    }
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+
+
+
 
