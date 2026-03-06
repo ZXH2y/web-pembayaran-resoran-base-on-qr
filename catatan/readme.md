@@ -108,3 +108,72 @@ laravel new restoran-andri
         }
     
 
+9. Membuat UserFactory
+
+    return [
+        'username' => fake()->username(),
+        'password' => static::$password ??= Hash::make('password'),
+        'fullname' => fake()->name(),
+        'email' => fake()->unique()->safeEmail(),
+        'phone' => fake()->phoneNumber(),
+        'role_id' => fake()->numberBetween(1, 3),
+        
+    ];
+
+10. Membuat seeder untuk user
+    php artisan make:seeder UserSeeder
+
+
+11. Membuat Tabel Order
+    php artisan make:model Order -m
+
+        Schema::create('orders', function (Blueprint $table) {
+                $table->id();
+                $table->string('order_code')->unique();
+                $table->unsignedBigInteger('user_id');
+                $table->integer('subtotal');
+                $table->integer('tax');
+                $table->integer('grand_total');
+                $table->enum('status', ['pending', 'settlement' ,'cooked']);
+                $table->enum('payment_method', ['tunai', 'qris']);
+                $table->text('note')->nullable();
+                $table->softDeletes();
+                $table->timestamps();
+
+                $table->foreign('user_id')->references('id')->on('users');
+            });
+
+12. Membuat tabel OrderItem
+    php artisan make:mode OrderItem -m
+
+        Schema::create('order_items', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('order_id');
+            $table->unsignedBigInteger('item_id');
+            $table->integer('quantity');
+            $table->integer('price');
+            $table->integer('tax');
+            $table->integer('total_price');
+            $table->timestamps();
+            $tabel->softDeletes();
+
+            $table->foreign('order_id')->references('id')->on('orders');
+            $table->foreign('item_id')->references('id')->on('items');
+
+        });
+
+
+
+13. Membuat UserFactory
+        return [
+            'username' => fake()->username(),
+            'password' => static::$password ??= Hash::make('password'),
+            'fullname' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'phone' => fake()->phoneNumber(),
+            'role_id' => fake()->numberBetween(1, 3),
+        ];
+
+
+# Migrations
+
