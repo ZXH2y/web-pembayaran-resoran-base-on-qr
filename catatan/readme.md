@@ -311,5 +311,20 @@ php artisan migrate
     }
 
 
+# VIEW
+episode integrasi template
+
+pertama download template dari:
+git clone https://github.com/adityafakhrii/restoranku-user.git
+
+1. buat folde layouts didalam folder costumer
+2. buat file master.blade.php lalu paste code html ke dalamnya
+3. di folder public/assets, buat folder costumer > copy folder css,js,lib,scss dari template ke sini.
+
+
+
+
+
+
 
 
