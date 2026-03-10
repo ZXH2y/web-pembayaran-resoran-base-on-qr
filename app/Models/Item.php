@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Item extends Model
 {
-    use softDeteles, HasFactory;
+    use SoftDeletes, HasFactory;
 
     protected $fillable = [
         'name',
