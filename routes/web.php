@@ -1,15 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MenuController;
+
 
 Route::get('/', function () {
-    return view('costumer.layouts.master');
-})->name('home');
+    return redirect()->route('menu');
+});
 
 
-Route::get('/menu', function () {
-    return view('costumer.menu');
-})->name('menu');
+Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 
 Route::get('/cart', function () {
     return view('costumer.cart');

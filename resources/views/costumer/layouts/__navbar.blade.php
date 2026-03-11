@@ -21,7 +21,7 @@
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <a href="{{ route('home') }}" class="nav-item nav-link active">Beranda</a>
+                            <a href="/" class="nav-item nav-link active">Beranda</a>
                             <a href="{{ route('menu') }}" class="nav-item nav-link">Menu Makanan</a>
                             <a href="shop-detail.html" class="nav-item nav-link">Rincian</a>
                             <div class="nav-item dropdown">
