@@ -54,7 +54,7 @@
     </div>
 </div>
 <!-- Fruits Shop End-->
-{{-- @endsection
+@endsection
 
 @section('script')
     <script>
@@ -76,4 +76,4 @@
             });
         }
     </script>
-@endsection --}}
+@endsection
