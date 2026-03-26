@@ -121,7 +121,7 @@
     </div>
 </div>
 @endsection
-{{-- 
+
 @section('script')
     <script>
         function updateQuantity(itemId, change) {
@@ -159,27 +159,5 @@
             });
         }
 
-        function removeItemFromCart(itemId) {
-            fetch("{{ route('cart.remove') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ id: itemId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menghapus item dari keranjang');
-            });
-        }
     </script>
-@endsection --}}
+@endsection
