@@ -30,7 +30,7 @@
                     <th scope="col">Jumlah</th>
                     <th scope="col">Total</th>
                     <th scope="col">Aksi</th>
-                  </tr>
+                   </tr>
                 </thead>
                 <tbody>
                     @php
@@ -157,6 +157,31 @@
                 console.error('Error:', error);
                 alert('Terjadi kesalahan saat mengupdate keranjang');
             });
+
+            function removeItemFromCart(item){
+            fetch("{{ route('cart.update') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ id: itemId, qty: newQty })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success){
+                    location.reload();
+                }else{
+                    alert(data.message);
+                }
+            })
+            .catch(arror) => {
+                console.log('Error: ', error);
+                alert('Terjadi kesalahan saat menghapus data dari keranjang'); 
+            }
+ 
+            }
+
         }
 
     </script>

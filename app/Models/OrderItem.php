@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
-    use softDeletes;
+    use SoftDeletes;
 
     protected $fillable = [
         'order_id',

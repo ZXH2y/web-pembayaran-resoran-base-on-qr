@@ -1,4 +1,4 @@
-@extends('customer.layouts.master')
+@extends('costumer.layouts.master')
 
 @section('content')
 <!-- Single Page Header start -->
