@@ -107,4 +107,17 @@ class MenuController extends Controller
         Session::forget('cart');
         return redirect()->route('cart')->with('success', 'Keranjang berhasil dikosongkan');
     }
+
+    // Checkout
+    public function checkout(){
+        $cart = Session::get('cart');
+        if(empty($cart)){
+            return redirect()->route('cart')->with('error', 'keranjang masih kosong');
+        }
+
+        $tableNumber = Session::get('tableNumber');
+
+        return view('costumer.checkout', compact('cart'));
+
+    }
 }
