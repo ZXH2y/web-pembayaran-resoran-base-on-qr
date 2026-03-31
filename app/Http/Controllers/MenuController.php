@@ -117,7 +117,7 @@ class MenuController extends Controller
 
         $tableNumber = Session::get('tableNumber');
 
-        return view('costumer.checkout', compact('cart'));
+        return view('costumer.checkout', compact('cart', 'tableNumber'));
 
     }
 }

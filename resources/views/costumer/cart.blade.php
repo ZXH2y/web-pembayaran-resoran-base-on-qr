@@ -123,66 +123,63 @@
 @endsection
 
 @section('script')
-    <script>
-        function updateQuantity(itemId, change) {
-            var qtyInput = document.getElementById('qty-' + itemId);
-            var currentQty = parseInt(qtyInput.value);
-            var newQty = currentQty + change;
-
-            if (newQty <= 0 ) {
-                if(confirm('Apakah anda yakin ingin menghapus item ini?')) {
-                    removeItemFromCart(itemId);
-                }
-                return;
+<script>
+    function removeItemFromCart(itemId) {
+        fetch("{{ route('cart.remove') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ id: itemId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Gagal menghapus item');
             }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus data dari keranjang');
+        });
+    }
 
-            fetch("{{ route('cart.update') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ id: itemId, qty: newQty })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    qtyInput.value = newQty;
-                    location.reload();
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat mengupdate keranjang');
-            });
+    function updateQuantity(itemId, change) {
+        var qtyInput = document.getElementById('qty-' + itemId);
+        var currentQty = parseInt(qtyInput.value);
+        var newQty = currentQty + change;
 
-            function removeItemFromCart(item){
-            fetch("{{ route('cart.update') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ id: itemId, qty: newQty })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success){
-                    location.reload();
-                }else{
-                    alert(data.message);
-                }
-            })
-            .catch(arror) => {
-                console.log('Error: ', error);
-                alert('Terjadi kesalahan saat menghapus data dari keranjang'); 
+        if (newQty <= 0) {
+            if (confirm('Apakah anda yakin ingin menghapus item ini?')) {
+                removeItemFromCart(itemId);
             }
- 
-            }
-
+            return;
         }
 
-    </script>
+        fetch("{{ route('cart.update') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ id: itemId, qty: newQty })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                qtyInput.value = newQty;
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengupdate keranjang');
+        });
+    }
+</script>
 @endsection
