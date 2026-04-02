@@ -135,7 +135,7 @@ class MenuController extends Controller
       ]);
 
       if($validator->fails()){
-        return redirect()-route('checkout')->withErrors($validator);
+        return redirect()->route('checkout')->withErrors($validator);
       }
 
       $total = 0;
@@ -149,7 +149,7 @@ class MenuController extends Controller
 
         $itemDetails[] = [
             'id' => $item['id'],
-            'price' => (int) $item['price'] + ($item['price'] * 0.1),
+            'price' => (int) ($item['price'] + ($item['price'] * 0.1)),
             'quantity' => $item['qty'],
             'name' => substr($item['name'], 0,50),
         ];
@@ -184,8 +184,44 @@ class MenuController extends Controller
       }
 
       Session::forget('cart');
+      if($request->payment_method == 'tunai'){
+        return redirect()->route('checkout.success',['orderId' => $order->order_code])->with('success', 'Pesanan berhasil dibuat');
+      }
+      else{
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('midtrans.is_production');
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+
+        // array param berisi data data yang akan kita kirimkan ke midtrans melalui snap
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->order_code,
+                'gross_amount' => (int) $order->grand_total,
+            ],
+                'item_details' => $itemDetails,
+                'costumer_details' => [
+                'firt_name' => $user->fullname ?? 'Guest',
+                'phone' => $user->phone,
+            ],
+                'payment_type' => 'qris',
+        ];
+        try{
+            // mengirimkan data lewat snap
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+            return response()->json([
+                'status' => 'success',
+                'snap_token' => $snapToken,
+                'order_code' => $order->order_code,
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal membuat transaksi: ' . $e->getMessage(),
+            ]);
+        }
+      }
       
-      return redirect()->route('checkout.success', ['orderId' => $order->order_code])->with('success', 'Pesanan berhasil dibuat');
 
     }
 
