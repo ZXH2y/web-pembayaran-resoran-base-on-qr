@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UseController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return redirect()->route('menu');
@@ -25,7 +29,7 @@ Route::get('/dashboard', function () {
 
 })->name('dashboard');
 Route::resource('category', CategoryController::class);
-Route::resource('items', CategoryController::class);
-Route::resource('role', CategoryController::class);
-Route::resource('users', CategoryController::class);
-Route::resource('orders', CategoryController::class);
+Route::resource('items', ItemController::class);
+Route::resource('role', RoleController::class);
+Route::resource('users', UserController::class);
+Route::resource('orders', OrderController::class);
