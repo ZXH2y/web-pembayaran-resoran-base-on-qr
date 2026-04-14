@@ -71,8 +71,8 @@
                             </a> 
                         </li>
 
-                        <li class="sidebar-item {{request()->routeIs('role.*') ? 'active' : ''}}">
-                            <a href="{{route('role.index')}}" class='sidebar-link'>
+                        <li class="sidebar-item {{request()->routeIs('roles.*') ? 'active' : ''}}">
+                            <a href="{{route('roles.index')}}" class='sidebar-link'>
                                 <i class="bi bi-person-fill"></i>
                                 <span>Manajemen Role</span>
                             </a> 
