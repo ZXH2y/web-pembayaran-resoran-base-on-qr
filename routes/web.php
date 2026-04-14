@@ -5,7 +5,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UseController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
