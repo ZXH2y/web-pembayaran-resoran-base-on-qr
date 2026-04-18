@@ -21,7 +21,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.category.create');
     }
 
     /**
@@ -29,7 +29,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'cat_name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+
+        Category::create($request->all());
+
+        return redirect()->route('category.index')->with('success', 'Category berhasil di simpan');
     }
 
     /**
@@ -45,7 +52,9 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+
+        return view('admin.category.edit', compact('category'));
     }
 
     /**
@@ -53,7 +62,16 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'cat_name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+
+        $category = Category::findOrFail($id);
+        $category->update($request->all());
+
+
+        return redirect()->route('category.index')->with('success', 'berhasil update data catgeory');
     }
 
     /**
@@ -61,6 +79,10 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+
+        $category->delete();
+
+        return redirect()->route('category.index')->with('success', 'berhasil hapus kategori');
     }
 }
