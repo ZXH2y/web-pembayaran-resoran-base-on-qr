@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\Item;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderItem;
-use Illuminate\Support\Facades\Validator;
 
 class MenuController extends Controller
 {
@@ -109,132 +109,136 @@ class MenuController extends Controller
     }
 
     // Checkout
-    public function checkout(){
+    public function checkout()
+    {
         $cart = Session::get('cart');
-        if(empty($cart)){
-            return redirect()->route('cart')->with('error', 'keranjang masih kosong');
-        }
-
-        $tableNumber = Session::get('tableNumber');
-
-        return view('costumer.checkout', compact('cart', 'tableNumber'));
-
-    }
-
-    public function storeOrder(Request $request){
-        $cart = Session::get('cart');
-        $tableNumber = Session::get('tableNumber');
-
-        if(empty($cart)){
+        if(empty($cart)) {
             return redirect()->route('cart')->with('error', 'Keranjang masih kosong');
         }
 
-      $validator = Validator::make($request->all(), [
-        'fullname' => 'required|string|max:255',
-        'phone' => 'required|string|max:15',
-      ]);
+        $tableNumber = Session::get('tableNumber');
 
-      if($validator->fails()){
-        return redirect()->route('checkout')->withErrors($validator);
-      }
-
-      $total = 0;
-      foreach ($cart as $item){
-        $total += $item['price'] * $item['qty'];
-      }
-
-      $totalAmount = 0;
-      foreach ($cart as $item){
-        $totalAmount += $item['qty'] * $item['price'];
-
-        $itemDetails[] = [
-            'id' => $item['id'],
-            'price' => (int) ($item['price'] + ($item['price'] * 0.1)),
-            'quantity' => $item['qty'],
-            'name' => substr($item['name'], 0,50),
-        ];
-      }
-      $user = User::firstOrCreate([
-        'fullname' => $request->input('fullname'),
-        'phone' => $request->input('phone'),
-        'role_id' => 4
-      ]);
-
-      $order = Order::create([
-        'order_code' => 'ORD-' .$tableNumber. '-'. time(),
-        'user_id' => $user->id,
-        'subtotal' => $totalAmount,
-        'tax' => 0.1 * $totalAmount,
-        'grand_total' => $totalAmount + (0.1 * $totalAmount),
-        'table_number' => $tableNumber,
-        'status' => 'pending',
-        'payment_method' => $request->payment_method,
-        'notes' => $request->notes,
-      ]);
-
-      foreach($cart as $itemId => $item){
-        OrderItem::create([
-            'order_id' => $order->id,
-            'item_id' => $item['id'],
-            'quantity' => $item['qty'],
-            'price' => $item['price'] * $item['qty'],
-            'tax' => 0.1 * $item['price'] * $item['qty'],
-            'total_price' => ($item['price'] * $item['qty']) + ( 0.1 * $item['price'] * $item['qty']),
-        ]);
-      }
-
-      Session::forget('cart');
-      if($request->payment_method == 'tunai'){
-        return redirect()->route('checkout.success',['orderId' => $order->order_code])->with('success', 'Pesanan berhasil dibuat');
-      }
-      else{
-        \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        \Midtrans\Config::$isProduction = config('midtrans.is_production');
-        \Midtrans\Config::$isSanitized = true;
-        \Midtrans\Config::$is3ds = true;
-
-        // array param berisi data data yang akan kita kirimkan ke midtrans melalui snap
-        $params = [
-            'transaction_details' => [
-                'order_id' => $order->order_code,
-                'gross_amount' => (int) $order->grand_total,
-            ],
-                'item_details' => $itemDetails,
-                'costumer_details' => [
-                'firt_name' => $user->fullname ?? 'Guest',
-                'phone' => $user->phone,
-            ],
-                'payment_type' => 'qris',
-        ];
-        try{
-            // mengirimkan data lewat snap
-            $snapToken = \Midtrans\Snap::getSnapToken($params);
-            return response()->json([
-                'status' => 'success',
-                'snap_token' => $snapToken,
-                'order_code' => $order->order_code,
-            ]);
-        }catch(\Exception $e){
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Gagal membuat transaksi: ' . $e->getMessage(),
-            ]);
-        }
-      }
-      
-
+        return view('costumer.checkout', compact('cart','tableNumber'));
     }
 
-    public function checkoutSuccess($orderId){
+    public function storeOrder(Request $request)
+    {
+        $cart = Session::get('cart');
+        $tableNumber = Session::get('tableNumber');
+
+        if(empty($cart)) {
+            return redirect()->route('cart')->with('error', 'Keranjang masih kosong');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('checkout')->withErrors($validator);
+        }
+
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['qty'];
+        }
+
+        $totalAmount = 0;
+        foreach ($cart as $item) {
+            $totalAmount += $item['qty'] * $item['price'];
+
+            $itemDetails[] = [
+                'id' => $item['id'],
+                'price' => (int) ($item['price'] + ($item['price'] * 0.1)),
+                'quantity' => $item['qty'],
+                'name' => substr($item['name'], 0, 50),
+            ];
+        }
+
+        $user = User::firstOrCreate([
+            'fullname' => $request->input('fullname'),
+            'phone' => $request->input('phone'),
+            'role_id' => 4
+        ]);
+
+        $order = Order::create([
+            'order_code' => 'ORD-'.$tableNumber.'-'. time(),
+            'user_id' => $user->id,
+            'subtotal' => $totalAmount,
+            'tax' => 0.1 * $totalAmount,
+            'grand_total' => $totalAmount + (0.1 * $totalAmount),
+            'status' => 'pending',
+            'table_number' => $tableNumber,
+            'payment_method' => $request->payment_method,
+            'note' => $request->note,
+        ]);
+
+        foreach ($cart as $itemId => $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'item_id' => $item['id'],
+                'quantity' => $item['qty'],
+                'price' => $item['price'] * $item['qty'],
+                'tax' => 0.1 * $item['price'] * $item['qty'],
+                'total_price' => ($item['price'] * $item['qty']) + (0.1 * $item['price'] * $item['qty']),
+            ]);
+        }
+
+        Session::forget('cart');
+
+        if($request->payment_method == 'tunai') {
+            return redirect()->route('checkout.success', ['orderId' => $order->order_code])->with('success', 'Pesanan berhasil dibuat');
+        } else {
+            \Midtrans\Config::$serverKey = config('midtrans.server_key');
+            \Midtrans\Config::$isProduction = config('midtrans.is_production');
+            \Midtrans\Config::$isSanitized = true;
+            \Midtrans\Config::$is3ds = true;
+
+            $params = [
+                    'transaction_details' => [
+                        'order_id' => $order->order_code,
+                        'gross_amount' =>  (int) $order->grand_total,
+                ],
+                    'item_details' => $itemDetails,
+                    'costumer_details' => [
+                        'first_name' => $user->fullname ?? 'Guest',
+                        'phone' => $user->phone,
+                ],
+                    'payment_type' => 'qris',
+            ];
+
+            try {
+                $snapToken = \Midtrans\Snap::getSnapToken($params);
+                return response()->json([
+                    'status' => 'success',
+                    'snap_token' => $snapToken,
+                    'order_code' => $order->order_code,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Gagal membuat pesanan. Silakan coba lagi.'
+                ]);
+            }
+        }
+    }
+
+    public function checkoutSuccess($orderId)
+    {
         $order = Order::where('order_code', $orderId)->first();
-        if(!$orderId){
+
+        if (!$order) {
             return redirect()->route('menu')->with('error', 'Pesanan tidak ditemukan');
         }
+
         $orderItems = OrderItem::where('order_id', $order->id)->get();
-        if($order->payment_methode == 'qris'){
-            $order->status = 'settelment';
-            $order->create();
+
+        if ($order->payment_method == 'qris') {
+            $order->status  = 'settlement';
+            $order->save();
         }
+
         return view('costumer.success', compact('order', 'orderItems'));
 
     }
