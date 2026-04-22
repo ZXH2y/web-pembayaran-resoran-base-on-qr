@@ -324,6 +324,27 @@ git clone https://github.com/adityafakhrii/restoranku-user.git
 
 
 
+# Setup Autentikasi dengan Breeze
+1. ganti nama web.php supaya gak ke replace, misalkan jadi app.php
+2. composer require laravel/breeze
+3. php artisan breeze:install
+
+
+ ┌ Which Breeze stack would you like to install? ───────────────┐
+ │ Blade with Alpine                                            │
+ └──────────────────────────────────────────────────────────────┘
+
+ ┌ Would you like dark mode support? ───────────────────────────┐
+ │ No                                                           │
+ └──────────────────────────────────────────────────────────────┘
+
+ ┌ Which testing framework do you prefer? ──────────────────────┐
+ │ Pest              
+
+
+
+
+
 
 
 
