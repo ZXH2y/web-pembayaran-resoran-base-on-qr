@@ -7,6 +7,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Models\Order;
 
 Route::get('/', function () {
     return redirect()->route('menu');
@@ -34,6 +35,11 @@ Route::middleware('role:admin')->group(function(){
     Route::get('/dashboard', function () {return view('admin.dashboard');})->name('dashboard');
     
     });
+
+
+Route::middleware('role:admin|cashier')->group(function(){
+    Route::post('orders/{order}', [OrderController::class, 'settlement'])->name('orders.settelment');
+});
     
 Route::middleware('role:admin|cashier|chef')->group(function(){
     Route::resource('items', ItemController::class);
