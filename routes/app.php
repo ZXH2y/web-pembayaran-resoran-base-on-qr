@@ -36,18 +36,14 @@ Route::middleware('role:admin')->group(function(){
     
     });
 
-
-Route::middleware('role:admin|cashier')->group(function(){
-    Route::post('orders/{order}', [OrderController::class, 'settlement'])->name('orders.settelment');
-});
     
 Route::middleware('role:admin|cashier|chef')->group(function(){
     Route::resource('items', ItemController::class);
+    Route::post('/items/update-status/{id}', [ItemController::class, 'updateStatus'])->name('items.updateStatus');
     Route::get('/dashboard', function () {return view('admin.dashboard');})->name('dashboard');
     Route::resource('orders', OrderController::class);
+    Route::post('orders/settlement/{order}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     
 });
     
     
-
-Route::post('/items/update-status/{id}', [ItemController::class, 'updateStatus'])->name('items.updateStatus');

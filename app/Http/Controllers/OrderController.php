@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -22,11 +24,18 @@ class OrderController extends Controller
     }
 
 
-    public function settlement($id){
-        $order = Order::findOrFail($id);
-        $order->status = 'settlement';
-        $order->save();
+    public function updateStatus($id){
 
-        return redirect()->route('orders.index')->with('success', 'Pembayaran berhasil diterima');
+    $order = Order::findOrFail($id);
+
+    if(Auth::user()->role->role_name == 'admin' || Auth::user()->role->role_name == 'cashier'){
+        $order->status = 'settlement';
+    
+    }else{
+        $order->status = 'cooked';
+    }
+    $order->save();
+
+    return redirect()->route('orders.index')->with('success', 'Order berhasill di update');
     }
 }
