@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -32,7 +33,7 @@ Route::middleware('role:admin')->group(function(){
     Route::resource('users', UserController::class);
     Route::resource('orders', OrderController::class);
     
-    Route::get('/dashboard', function () {return view('admin.dashboard');})->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     });
 
@@ -40,7 +41,7 @@ Route::middleware('role:admin')->group(function(){
 Route::middleware('role:admin|cashier|chef')->group(function(){
     Route::resource('items', ItemController::class);
     Route::post('/items/update-status/{id}', [ItemController::class, 'updateStatus'])->name('items.updateStatus');
-    Route::get('/dashboard', function () {return view('admin.dashboard');})->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('orders', OrderController::class);
     Route::post('orders/settlement/{order}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     
