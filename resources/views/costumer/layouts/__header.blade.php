@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Restoranku - Makan, Hangout, dan Chill.</title>
+        <title>Restoran Andri - Makan, Hangout, dan Chill.</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -27,4 +27,5 @@
 
         <!-- Template Stylesheet -->
         <link href="{{ asset('assets/costumer/css/style.css') }}" rel="stylesheet">
+        <link rel="icon" href="{{ asset('assets/img-web/logo.png')}}" type="image/x-icon">
     </head>

@@ -201,7 +201,7 @@ class MenuController extends Controller
                         'gross_amount' =>  (int) $order->grand_total,
                 ],
                     'item_details' => $itemDetails,
-                    'costumer_details' => [
+                    'customer_details' => [
                         'first_name' => $user->fullname ?? 'Guest',
                         'phone' => $user->phone,
                 ],

@@ -6,9 +6,9 @@ laravel new restoran-andri
     D_BCONNECTION=sqlite
     DB_HOST=127.0.0.1
     DB_PORT=3306
-    DB_DATABASE=restoranku
-    DB_USERNAME=andri
-    DB_PASSWORD=223280019
+    DB_DATABASE=nama_db_mu
+    DB_USERNAME=user_mu
+    DB_PASSWORD=pw_mu
 
     tambahkan ini juga:
     APP_TIMEZONE=Asia/Makassar

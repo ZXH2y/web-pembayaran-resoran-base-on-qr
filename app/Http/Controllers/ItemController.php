@@ -34,7 +34,7 @@ class ItemController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
             'is_active' => 'required|boolean',
         ],
         [
@@ -43,7 +43,7 @@ class ItemController extends Controller
             'price.required' => 'The price is required.',
             'category_id.required' => 'The category is required.',
             'img.image' => 'The image must be an image file.',
-            'img.max' => 'The image size must not exceed 2MB.',
+            'img.max' => 'The image size must not exceed 5MB.',
             'is_active.required' => 'The active status is required.',
             'is_active.boolean' => 'The active status must be true or false.',
         ]);
@@ -89,7 +89,7 @@ class ItemController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'img' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'img' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:5120',
             'is_active' => 'required|boolean',
         ],
         [
@@ -98,7 +98,7 @@ class ItemController extends Controller
             'price.required' => 'The price is required.',
             'category_id.required' => 'The category is required.',
             'img.image' => 'The image must be an image file.',
-            'img.max' => 'The image size must not exceed 2MB.',
+            'img.max' => 'The image size must not exceed 5MB.',
             'is_active.required' => 'The active status is required.',
             'is_active.boolean' => 'The active status must be true or false.',
         ]);
